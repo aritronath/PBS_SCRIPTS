@@ -1,0 +1,12 @@
+#!/bin/bash
+#PBS -N DNA_fastqc
+#PBS -S /bin/bash
+#PBS -l walltime=12:00:00
+#PBS -l nodes=1:ppn=4
+#PBS -l mem=32gb
+#PBS -o /scratch/anath1/${PBS_JOBNAME}.e${PBS_JOBID}
+#PBS -e /scratch/anath1/${PBS_JOBNAME}.o${PBS_JOBID}
+ 
+module load fastqc/0.10.1
+cd /scratch/anath1
+fastqc RH-5F-PE.fq.gz RH-5R-PE.fq.gz
