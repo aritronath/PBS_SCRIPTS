@@ -1,0 +1,22 @@
+#!/bin/bash
+#PBS -N MUTECT2
+#PBS -S /bin/bash
+#PBS -l walltime=24:00:00
+#PBS -l nodes=1:ppn=8
+#PBS -l mem=16gb
+#PBS -o $HOME/LOGS/${PBS_JOBNAME}.e${PBS_JOBID}
+#PBS -e $HOME/LOGS/${PBS_JOBNAME}.o${PBS_JOBID}
+#PBS -t 1-25
+
+module load java/jdk1.8.0_45
+cd /scratch/anath1 
+
+java -jar /apps/software/GenomeAnalysisTK/3.6/GenomeAnalysisTK.jar \
+-T MuTect2 \
+-nct 8 \
+-R /group/referenceFiles/Homo_sapiens/NCBI/b37.GATKbundle/v2.8/human_g1k_v37.fasta \
+-I:tumor Dedup_RH1.REF_${PBS_ARRAYID}.bam \
+-I:normal Dedup_RH5.REF_${PBS_ARRAYID}.bam \
+--dbsnp /group/referenceFiles/Homo_sapiens/NCBI/b37.GATKbundle/v2.8/dbsnp_138.b37.vcf \
+--cosmic /group/referenceFiles/Homo_sapiens/NCBI/b37.cosmic/v72/CosmicCombined.GRCh37-lite.reorder.vcf \
+-o P1_Dedup_Mutect.REF_${PBS_ARRAYID}.vcf
