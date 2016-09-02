@@ -1,0 +1,32 @@
+#!/bin/bash
+#PBS –N run_fastqc
+#PBS –S /bin/bash
+#PBS –l walltime=24:00:00
+#PBS –l nodes=1:ppn=1
+#PBS –l mem=16gb
+#PBS –o /scratch/anath1/${PBS_JOBNAME}.e${PBS_JOBID}
+#PBS –e /scratch/anath1/${PBS_JOBNAME}.o${PBS_JOBID}
+ 
+module load java/jdk1.8.0_45
+module load trimmomatic/0.30
+
+WORKDIR=/scratch/anath1
+cd $WORKDIR
+seqfile1F=./RH-1_S1_L003_R1_001.fastq
+seqfile1R=./RH-1_S1_L003_R2_001.fastq
+seqfile2F=./RH-5_S2_L004_R1_001.fastq
+seqfile2R=./RH-5_S2_L004_R2_001.fastq
+
+trim=/apps/software/trimmomatic/0.30/trimmomatic-0.30.jar
+
+java -jar $trim PE -phred33 \
+$seqfile1F $seqfile1R \
+RH-1F-PE.fq.gz RH-1F-SE.fq.gz RH-1R-PE.fq.gz RH-1R-SE.fq.gz \
+ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+
+sleep 2
+
+java -jar $trim PE -phred33 \
+$seqfile2F $seqfile2R \
+RH-5F-PE.fq.gz RH-5F-SE.fq.gz RH-5R-PE.fq.gz RH-5R-SE.fq.gz \
+ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
