@@ -1,0 +1,15 @@
+#!/bin/bash
+#PBS -N run_BWA
+#PBS -S /bin/bash
+#PBS -l walltime=36:00:00
+#PBS -l nodes=1:ppn=16
+#PBS -l mem=32gb
+#PBS -o $HOME/LOGS/${PBS_JOBNAME}.e${PBS_JOBID}
+#PBS -e $HOME/LOGS/${PBS_JOBNAME}.o${PBS_JOBID}
+
+module load bwa/0.7.12
+genome=/group/referenceFiles/Homo_sapiens/NCBI/b37.GATKbundle/v2.8/human_g1k_v37.fasta
+cd /group/rshuang-lab/Aritro/CML_DNA/FASTQ
+
+bwa mem -M -t 16 -R '@RG\tID:RSH\tPL:illumina\tSM:L1' \
+$genome RH-1_S1_L003_R1_001.fastq.gz RH-1_S1_L003_R2_001.fastq.gz > bwa_RH1.sam
