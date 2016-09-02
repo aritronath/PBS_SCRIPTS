@@ -1,0 +1,17 @@
+#!/bin/bash
+#PBS -N preprocess
+#PBS -S /bin/bash
+#PBS -l walltime=36:00:00
+#PBS -l nodes=1:ppn=4
+#PBS -l mem=16gb
+#PBS -o $HOME/LOGS/${PBS_JOBNAME}.e${PBS_JOBID}
+#PBS -e $HOME/LOGS/${PBS_JOBNAME}.o${PBS_JOBID}
+
+module load samtools/1.2
+
+cd /group/rshuang-lab/Aritro/CML_DNA/SAM
+samtools view -Shu -@ 3 bwa_RH1.sam | samtools sort -@ 4 - /scratch/anath1/Sorted_RH1
+
+cd /scratch/anath1
+java -jar /apps/software/picard-tools/1.92/MarkDuplicates.jar I=Sorted_RH1.bam O=Dedup_RH1.bam METRICS_FILE=metrics_1.txt
+samtools index -b Dedup_RH1.bam
