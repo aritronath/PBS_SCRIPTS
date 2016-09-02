@@ -1,0 +1,14 @@
+#!/bin/bash
+#PBS -N VARSCAN_SNP_ARRAY
+#PBS -S /bin/bash
+#PBS -l walltime=00:30:00
+#PBS -l nodes=1:ppn=1
+#PBS -l mem=1gb
+#PBS -o $HOME/LOGS/${PBS_JOBNAME}.e${PBS_JOBID}
+#PBS -e $HOME/LOGS/${PBS_JOBNAME}.o${PBS_JOBID}
+#PBS -t 1-25
+ 
+module load java/jdk1.8.0_45
+cd /scratch/anath1/VARSCAN
+
+java -jar /apps/software/varscan2/2.3.7/VarScan.v2.3.7.jar processSomatic P1_varscan_${PBS_ARRAYID}.snp
