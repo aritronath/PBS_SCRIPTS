@@ -1,0 +1,47 @@
+#!/bin/bash
+#PBS -N Baserecal1
+#PBS -S /bin/bash
+#PBS -l walltime=16:00:00
+#PBS -l nodes=1:ppn=4
+#PBS -l mem=32gb
+#PBS -o $HOME/LOGS/${PBS_JOBNAME}.e${PBS_JOBID}
+#PBS -e $HOME/LOGS/${PBS_JOBNAME}.o${PBS_JOBID}
+
+genome=/group/referenceFiles/Homo_sapiens/NCBI/b37.GATKbundle/v2.8/human_g1k_v37.fasta
+dbsnp=/group/referenceFiles/Homo_sapiens/NCBI/b37.GATKbundle/v2.8/dbsnp_138.b37.vcf
+
+cd /scratch/anath1 
+
+java -jar /apps/software/GenomeAnalysisTK/3.4-46/GenomeAnalysisTK.jar \
+-T BaseRecalibrator \
+-nct 4 \
+-R $genome \
+-I Dedup_RH1.bam \
+-knownSites $dbsnp \
+-o recal_data_RH1.table
+
+java -jar /apps/software/GenomeAnalysisTK/3.4-46/GenomeAnalysisTK.jar \
+-T BaseRecalibrator \
+-nct 4 \
+-R $genome \
+-I Dedup_RH1.bam \
+-L 20 \
+-knownSites $dbsnp \
+-BQSR recal_data_RH1.table \
+-o post_recal_data_RH1.table
+
+java -jar /apps/software/GenomeAnalysisTK/3.4-46/GenomeAnalysisTK.jar \
+-T AnalyzeCovariates \ 
+-R $genome \
+-L 20 \
+-before recal_data_RH1.table \
+-after post_recal_data_RH1.table \
+-plots recalibration_plots_RH1.pdf
+
+java -jar /apps/software/GenomeAnalysisTK/3.4-46/GenomeAnalysisTK.jar \
+-T PrintReads \
+-R $genome \
+-I Dedup_RH1.bam \
+-L 20 \
+-BQSR recal_data_RH1.table \
+-o Recal_RH1.bam
