@@ -1,0 +1,11 @@
+#!/bin/bash
+#SBATCH -N 1
+#SBATCH -n 32
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=anath@coh.org
+#SBATCH --mem=64G
+#SBATCH --time=72:00:00
+#SBATCH -p all
+#SBATCH --output=./log/ssgsea.log
+
+/home/anath/miniconda3/envs/MyR/bin/Rscript /home/anath/anath.grp/COH051/Cluster_ssGSEA.R
